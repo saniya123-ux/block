@@ -1,0 +1,325 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract HelloWorld {
+    string public message = "Hello World";
+}
+
+
+pragma solidity ^0.8.21; 
+contract ari{ 
+function add(int a, int b)public pure returns(int){ 
+return(a+b); 
+} 
+function sub(int a, int b)public pure returns(int){ 
+return(a-b); 
+} 
+function multi(int a, int b)public pure returns(int){ 
+return(a*b); 
+} 
+function divide(int a, int b)public pure returns(int){ 
+return(a/b); 
+} 
+} 
+
+
+
+pragma solidity ^0.8.21; 
+contract studentC{ 
+struct StudentD{ 
+uint sid; 
+string name; 
+string add; 
+} 
+StudentD s; 
+function addStudent(uint i, string memory n, string memory a)public{ 
+s.sid=i; 
+s.name=n; 
+s.add=a; 
+} 
+function getS() public view returns(uint,string memory, string 
+memory){ 
+return(s.sid,s.name,s.add); 
+} 
+} 
+
+
+
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.21;
+
+contract Employee {
+    struct Emp {
+        uint id;
+        string name;
+        uint salary;
+        string des;
+    }
+
+    mapping(uint => Emp) public e;
+
+    function add(uint i, string memory n, uint s, string memory d) public {
+        e[i] = Emp(i, n, s, d);
+    }
+
+    function get(uint i) public view returns (Emp memory) {
+        return e[i];
+    }
+
+    function update(uint i, uint s) public {
+        e[i].salary = s;
+    }
+}
+
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.21;
+
+contract EtherTransfer {
+    function deposit() public payable {}
+
+    function transfer(address payable to, uint amount) public {
+        to.transfer(amount);
+    }
+
+    function getBalance() public view returns (uint) {
+        return address(this).balance;
+    }
+}
+
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.21;
+
+contract Student {
+    struct StudentD {
+        uint id;
+        string name;
+        uint marks;
+    }
+
+    StudentD[] public students;
+
+    function add(uint i, string memory n, uint m) public {
+        students.push(StudentD(i, n, m));
+    }
+
+    function count() public view returns (uint) {
+        return students.length;
+    }
+
+    function get(uint i) public view returns (StudentD memory) {
+        return students[i];
+    }
+
+    function grade(uint i) public view returns (string memory) {
+        uint m = students[i].marks;
+
+        if (m >= 75) return "A";
+        if (m >= 60) return "B";
+        if (m >= 40) return "C";
+        return "Fail";
+    }
+}
+
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.21;
+
+contract Quiz {
+    struct Question {
+        string ques;
+        string ans;
+    }
+
+    Question[] public q;
+    uint public correct;
+    uint public wrong;
+
+    function add(string memory ques, string memory ans) public {
+        q.push(Question(ques, ans));
+    }
+
+    function answer(uint i, string memory ans) public {
+        require(i < q.length, "Invalid question");
+
+        if (keccak256(bytes(ans)) == keccak256(bytes(q[i].ans)))
+            correct++;
+        else
+            wrong++;
+    }
+
+    function total() public view returns (uint, uint) {
+        return (correct, wrong);
+    }
+}
+
+
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.21;
+
+contract A {
+    string public a = "Contract A";
+}
+
+contract B is A {
+    string public b = "Contract B";
+}
+
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.21;
+
+contract A {
+    string public a = "Contract A";
+}
+
+contract B {
+    string public b = "Contract B";
+}
+
+contract C is A, B {
+    string public c = "Contract C";
+}
+
+
+
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.21;
+
+contract Rental {
+    string public agency = "Rental Agency";
+
+    event VehicleRented(string vehicle, uint rent);
+
+    function calculateRent(uint daysRented) public virtual;
+}
+
+contract CarRental is Rental {
+    function calculateRent(uint daysRented) public override {
+        emit VehicleRented("Car", 10000 * daysRented);
+    }
+}
+
+contract BikeRental is Rental {
+    function calculateRent(uint daysRented) public override {
+        emit VehicleRented("Bike", 3000 * daysRented);
+    }
+}
+
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.21;
+
+contract Crowdfunding {
+    address public owner;
+    uint public goal;
+    uint public deadline;
+    uint public total;
+
+    event ContributionReceived(address, uint);
+    event GoalReached(uint);
+
+    constructor(uint g, uint duration) {
+        owner = msg.sender;
+        goal = g;
+        deadline = block.timestamp + duration;
+    }
+}
+
+contract Campaign is Crowdfunding {
+    constructor(uint g, uint d) Crowdfunding(g, d) {}
+
+    function contribute() public payable {
+        require(block.timestamp < deadline);
+        require(msg.value > 0);
+
+        total += msg.value;
+        emit ContributionReceived(msg.sender, msg.value);
+
+        if (total >= goal)
+            emit GoalReached(total);
+    }
+
+    function refund() public {
+        require(block.timestamp >= deadline);
+        require(total < goal);
+
+        payable(msg.sender).transfer(address(this).balance);
+    }
+}
+
+
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.21;
+
+contract Product {
+    uint public id, price, stock;
+    string public name;
+
+    constructor(uint i, uint p, uint s, string memory n) {
+        id = i;
+        price = p;
+        stock = s;
+        name = n;
+    }
+
+    function display() public view returns(uint, uint, uint, string memory) {
+        return (id, price, stock, name);
+    }
+}
+
+contract OnlineStore is Product {
+    constructor(uint i, uint p, uint s, string memory n)
+        Product(i, p, s, n) {}
+
+    function purchase(uint qty) public payable {
+        require(stock >= qty, "Out of stock");
+        require(msg.value == price * qty, "Wrong payment");
+        stock -= qty;
+    }
+}
+
+
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.21;
+
+contract Person {
+    string public name;
+    uint public id;
+
+    constructor(string memory n, uint i) {
+        name = n;
+        id = i;
+    }
+}
+
+contract Student is Person {
+    string public course;
+    uint public fees, seats, count;
+    mapping(uint => bool) public registered;
+
+    constructor(string memory n, uint i, string memory c, uint f, uint s)
+        Person(n, i) {
+        course = c;
+        fees = f;
+        seats = s;
+    }
+
+    function register() public {
+        require(count < seats, "Seats Full");
+        require(!registered[id], "Already Registered");
+
+        registered[id] = true;
+        count++;
+    }
+}
+
+
+
+
